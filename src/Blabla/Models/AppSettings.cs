@@ -41,22 +41,37 @@ public sealed class AppSettings
             Name = "Programmeren",
             Language = "nl",
             Prompt = "Dit is Nederlands dicteren door een softwareontwikkelaar. " +
-                     "Onderwerpen: C#, Angular, TypeScript, PostgreSQL, OpenAI, Claude Code, " +
-                     "Wozzol, MagnaFlow. Herken Nederlandse zinnen met Engelse programmeertermen.",
+                     "Onderwerpen: Python, C#, Angular, TypeScript, PostgreSQL, OpenAI, Claude Code. " +
+                     "Herken Nederlandse zinnen met Engelse programmeertermen.",
         };
-        var wozzol = new Preset
+        var general = new Preset
         {
-            Name = "Wozzol",
+            Name = "General",
+            Language = "en",
+            Prompt = "This is English dictation. Recognize complete English sentences " +
+                     "with correct punctuation and capitalization.",
+        };
+        var programming = new Preset
+        {
+            Name = "Programming",
+            Language = "en",
+            Prompt = "This is English dictation for software developers. " +
+                     "Topics: Python, C#, Angular, TypeScript, PostgreSQL, OpenAI, Claude Code. " +
+                     "Recognize English sentences with programming terms.",
+        };
+        var multilingual = new Preset
+        {
+            Name = "Multilingual",
             Language = null, // multilingual: automatic detection
-            Prompt = "Dit is een dictee voor de Wozzol-app. Gebruikers spreken woorden uit " +
-                     "in verschillende talen. Herken buitenlandse woorden en eigennamen zo " +
-                     "nauwkeurig mogelijk.",
+            Prompt = "This is a dictation option. Users speak words in " +
+                     "different languages. Recognize foreign words and proper names as " +
+                     "accurately as possible.",
         };
 
         return new AppSettings
         {
-            Presets = [algemeen, programmeren, wozzol],
-            ActivePresetId = algemeen.Id,
+            Presets = [algemeen, programmeren, general, programming, multilingual],
+            ActivePresetId = general.Id,
         };
     }
 }
