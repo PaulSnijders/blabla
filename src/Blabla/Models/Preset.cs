@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Blabla.Models;
 
 /// <summary>A named bundle of transcription settings (spec: Key Entities / Preset).</summary>
@@ -26,6 +28,9 @@ public sealed class Preset
     /// <summary>Chat-model temperature, or null for the service default (some models only accept the default).</summary>
     public decimal? LlmTemperature { get; set; }
 
+    /// <summary>Find/replace fixes, one "find=replace" per line, applied to every transcription.</summary>
+    public string Replacements { get; set; } = "";
+
     [System.Text.Json.Serialization.JsonIgnore]
     public bool UsesLlm => LlmEnabled && !string.IsNullOrWhiteSpace(LlmSystemPrompt);
 
@@ -41,5 +46,28 @@ public sealed class Preset
         LlmSystemPrompt = LlmSystemPrompt,
         LlmModel = LlmModel,
         LlmTemperature = LlmTemperature,
+        Replacements = Replacements,
     };
+
+    /// <summary>
+    /// Applies the "find=replace" lines: case-insensitive, and whole words only
+    /// (so "cloud=Claude" leaves "cloudflare" alone). Lines without '=' are ignored.
+    /// </summary>
+    public string ApplyReplacements(string text)
+    {
+        foreach (var line in Replacements.Split('\n'))
+        {
+            var separator = line.IndexOf('=');
+            if (separator < 0) continue;
+            var find = line[..separator].Trim();
+            var replace = line[(separator + 1)..].Trim();
+            if (find.Length == 0) continue;
+
+            var pattern = Regex.Escape(find);
+            if (char.IsLetterOrDigit(find[0])) pattern = @"\b" + pattern;
+            if (char.IsLetterOrDigit(find[^1])) pattern += @"\b";
+            text = Regex.Replace(text, pattern, replace.Replace("$", "$$"), RegexOptions.IgnoreCase);
+        }
+        return text;
+    }
 }

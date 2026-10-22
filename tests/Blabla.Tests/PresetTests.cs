@@ -130,6 +130,15 @@ public sealed class PresetTests : IDisposable
         public void HideView() { }
     }
 
+    [Fact]
+    public void ApplyReplacements_CaseInsensitive_WholeWordsOnly()
+    {
+        var preset = new Preset { Replacements = "cloud=Claude\r\nzonder scheidingsteken\n  c sharp = C#  " };
+
+        Assert.Equal("Ik gebruik Claude Code op cloudflare met C#.",
+            preset.ApplyReplacements("Ik gebruik Cloud Code op cloudflare met C Sharp."));
+    }
+
     public void Dispose()
     {
         try { Directory.Delete(_dir, recursive: true); } catch (IOException) { }

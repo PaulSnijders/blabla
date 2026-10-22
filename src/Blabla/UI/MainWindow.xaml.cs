@@ -207,6 +207,7 @@ public partial class MainWindow : Window
         PresetLlmPromptBox.Text = preset?.LlmSystemPrompt ?? "";
         PresetLlmModelBox.Text = preset?.LlmModel ?? "";
         PresetLlmTemperatureBox.Text = preset?.LlmTemperature?.ToString(CultureInfo.InvariantCulture) ?? "";
+        PresetReplacementsBox.Text = preset?.Replacements ?? "";
     }
 
     private void CommitPresetEditor()
@@ -223,6 +224,7 @@ public partial class MainWindow : Window
         _editingPreset.LlmModel = PresetLlmModelBox.Text.Trim().Length > 0
             ? PresetLlmModelBox.Text.Trim() : "gpt-5-mini";
         _editingPreset.LlmTemperature = ParseTemperature(PresetLlmTemperatureBox.Text);
+        _editingPreset.Replacements = PresetReplacementsBox.Text.Replace("\r", "").Trim();
         if (PresetActiveBox.IsChecked == true)
             _activePresetId = _editingPreset.Id;
         RefreshPresetListDisplay();

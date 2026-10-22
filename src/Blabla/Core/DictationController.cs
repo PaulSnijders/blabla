@@ -187,7 +187,7 @@ public sealed class DictationController
         }
 
         var preset = _getSettings().ActivePreset;
-        var result = await _client.TranscribeAsync(wav, preset, _getApiKey());
+        var result = ApplyReplacements(await _client.TranscribeAsync(wav, preset, _getApiKey()), preset);
 
         // Optional post-processing: the transcription becomes the LLM's input (per preset).
         // The raw transcription is kept as the entry's intermediate result — also when the
@@ -235,7 +235,7 @@ public sealed class DictationController
     public async Task<bool> RetryAsync(TranscriptionEntry entry, byte[] audio)
     {
         var preset = _getSettings().ActivePreset;
-        var result = await _client.TranscribeAsync(audio, preset, _getApiKey());
+        var result = ApplyReplacements(await _client.TranscribeAsync(audio, preset, _getApiKey()), preset);
 
         // Retry runs the same pipeline as a fresh dictation, including LLM post-processing.
         string? rawText = null;
@@ -260,6 +260,12 @@ public sealed class DictationController
         _history.Update(entry);
         return false;
     }
+
+    /// <summary>The preset's find/replace fixes run on the raw transcription, before any LLM step.</summary>
+    private static TranscriptionResult ApplyReplacements(TranscriptionResult result, Preset preset)
+        => result.Outcome == TranscriptionOutcome.Success
+            ? TranscriptionResult.Success(preset.ApplyReplacements(result.Text!))
+            : result;
 
     /// <summary>
     /// Inserts off the UI thread: the inserter first waits for the hotkey's modifier keys

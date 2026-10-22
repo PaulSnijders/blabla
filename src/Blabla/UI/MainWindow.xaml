@@ -99,7 +99,7 @@
 
                                     <TextBlock Text="Model" Style="{StaticResource FieldLabel}"/>
                                     <TextBox x:Name="PresetModelBox"/>
-                                    <TextBlock Style="{StaticResource Hint}" Text="Bijv. gpt-4o-transcribe, gpt-4o-mini-transcribe of whisper-1."/>
+                                    <TextBlock Style="{StaticResource Hint}" Text="Bijv. gpt-4o-transcribe, gpt-transcribe (nieuwer), gpt-4o-mini-transcribe of whisper-1."/>
                                 </StackPanel>
                             </TabItem>
 
@@ -136,6 +136,17 @@
                                             </StackPanel>
                                         </Grid>
                                     </StackPanel>
+                                </StackPanel>
+                            </TabItem>
+
+                            <TabItem Header="Vervangingen">
+                                <StackPanel Margin="8">
+                                    <TextBlock Text="Zoeken en vervangen" Style="{StaticResource FieldLabel}" Margin="0,0,0,3"/>
+                                    <TextBox x:Name="PresetReplacementsBox" AcceptsReturn="True" TextWrapping="NoWrap"
+                                             Height="160" VerticalScrollBarVisibility="Auto"
+                                             HorizontalScrollBarVisibility="Auto" FontFamily="Consolas"/>
+                                    <TextBlock Style="{StaticResource Hint}" TextWrapping="Wrap"
+                                               Text="Eén vervanging per regel, bijv. cloud=Claude. Hoofdletterongevoelig en alleen hele woorden. Wordt toegepast direct na de transcriptie (vóór de LLM-nabewerking)."/>
                                 </StackPanel>
                             </TabItem>
                         </TabControl>
